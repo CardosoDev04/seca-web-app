@@ -1,0 +1,514 @@
+openapi: 3.0.0
+info:
+  title: SECA API
+  version: 1.0.0
+  description: This is the API for the SECA project. It allows the user to create, edit and delete groups, as well as add and remove events from them. It also allows the user to search for events and list the most popular ones and many other things.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+paths:
+  /users/create:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User created successfully
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+        '501':
+          description: User Already Exists
+          content:
+            application/json:
+              example:
+                error: User Already Exists
+  /users/login:
+    post:
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              example:
+                token: <JWT_token_here>
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+        '505':
+          description: User Does Not Exist
+          content:
+            application/json:
+              example:
+                error: User Does Not Exist
+        '508':
+          description: Wrong Password
+          content:
+            application/json:
+              example:
+                error: Wrong Password
+  /groups/delete:
+    post:
+      summary: Delete a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+      responses:
+        '200':
+          description: Group deleted successfully
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+        '502':
+          description: Group Does Not Exist
+          content:
+            application/json:
+              example:
+                error: Group Does Not Exist
+
+  /groups/create:
+    post:
+      summary: Create a new group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Group created successfully
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+
+        '501':
+          description: Group Already Exists
+          content:
+            application/json:
+              example:
+                error: Group Already Exists
+
+
+  /groups/edit:
+    post:
+      summary: Edit a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                newName:
+                  type: string
+                newDescription:
+                  type: string
+      responses:
+        '200':
+          description: Group edited successfully
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+        '502':
+          description: Group Does Not Exist
+          content:
+            application/json:
+              example:
+                error: Group Does Not Exist
+
+  /groups/list:
+    post:
+      summary: List all groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+      responses:
+        '200':
+          description: Groups listed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        events:
+                          type: array
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+        '501':
+          description: User Does Not Exist
+          content:
+            application/json:
+              example:
+                error: User Does Not Exist
+
+  /groups/get/details:
+    post:
+      summary: Get details from group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+      responses:
+        '200':
+          description: groupDetails.hbs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        events:
+                          type: array
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+        '502':
+          description: Group Does Not Exist
+          content:
+            application/json:
+              example:
+                error: Group Does Not Exist
+
+  /groups/add/event:
+    post:
+      summary: Add an event to a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                eventID:
+                  type: string
+      responses:
+        '200':
+          description: Event added to group successfully
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+        '504':
+          description: Event Already Exists in Group
+          content:
+            application/json:
+              example:
+                error: Event Already Exists in Group
+        '502':
+          description: Group Does Not Exist
+          content:
+            application/json:
+              example:
+                error: Group Does Not Exist
+
+
+  /groups/remove/event:
+    post:
+      summary: Remove an event from a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                eventID:
+                  type: string
+      responses:
+        '200':
+          description: Event removed from group successfully
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+        '506':
+          description: Event Does Not Exist
+          content:
+            application/json:
+              example:
+                error: Event Does Not Exist
+        '507':
+          description: Event Does Not Exist In Group
+          content:
+            application/json:
+              example:
+                error: Event Does Not Exist In Group
+
+  /events/popular:
+    post:
+      summary: Returns a list of the most popular events, by default it returns 30 events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                apiKey:
+                  type: string
+                size:
+                  type: integer
+                page:
+                  type: integer
+      responses:
+        '200':
+          description: Lists the "size" most popular events of the "page" page
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        date:
+                          type: string
+                        venue:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            country:
+                              type: string
+                            city:
+                              type: string
+                        segment:
+                          type: string
+                        genre:
+                          type: string
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
+
+  /events/search:
+    post:
+      summary: Returns a list of events associated with a search keyword, by default it returns 30 events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                apiKey:
+                  type: string
+                size:
+                  type: integer
+                page:
+                  type: integer
+                keyword:
+                  type: string
+      responses:
+        '200':
+          description: Lists the "size" number of events of the "page" page associated with the keyword.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        date:
+                          type: string
+                        venue:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            country:
+                              type: string
+                            city:
+                              type: string
+                        segment:
+                          type: string
+                        genre:
+                          type: string
+        '400':
+          description: Bad request, invalid parameters
+          content:
+            application/json:
+              example:
+                error: Bad request
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              example:
+                error: Internal Error
